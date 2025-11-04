@@ -6,7 +6,12 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "simulator": "node simulator.js",
+    "db:create": "psql -U postgres -c 'CREATE DATABASE smartpark;'",
+    "db:schema": "psql -U postgres -d smartpark -f database/schema.sql",
+    "db:seed": "psql -U postgres -d smartpark -f database/seed.sql",
+    "db:setup": "npm run db:create && npm run db:schema && npm run db:seed"
   },
   "keywords": ["express", "socket.io", "postgresql"],
   "author": "",
@@ -16,7 +21,10 @@
     "socket.io": "^4.7.2",
     "pg": "^8.11.3",
     "dotenv": "^16.3.1",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "bcrypt": "^5.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "axios": "^1.6.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

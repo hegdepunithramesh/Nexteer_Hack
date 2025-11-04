@@ -1,57 +1,176 @@
-# Nexteer Hack Backend
+# SmartPark Backend API
 
-Backend server built with Express, Socket.io, and PostgreSQL.
+Backend for SmartPark - Intelligent Real-Time Parking System with AI predictions, dynamic pricing, and real-time updates.
 
-## Setup
+## 🚀 Features
 
-1. Install dependencies:
+- **Real-time Updates** - Socket.io for live occupancy changes
+- **AI Predictions** - EWMA algorithm for availability forecasting
+- **Dynamic Pricing** - Multi-factor pricing engine
+- **Reservations** - Complete booking system with conflict detection
+- **Authentication** - JWT-based auth with bcrypt
+- **Sensor Simulator** - Test data generator
+
+## 📋 Prerequisites
+
+- **Node.js** 18+ ([Download](https://nodejs.org/))
+- **PostgreSQL** 13+ 
+
+### Install PostgreSQL
+
+**Ubuntu/Debian:**
 ```bash
+sudo apt-get update
+sudo apt-get install postgresql postgresql-contrib
+sudo service postgresql start
+```
+
+**macOS:**
+```bash
+brew install postgresql
+brew services start postgresql
+```
+
+**Arch Linux:**
+```bash
+sudo pacman -S postgresql
+sudo systemctl start postgresql
+```
+
+## ⚡ Quick Setup (3 Steps)
+
+```bash
+# 1. Install dependencies
 npm install
-```
 
-2. Create a `.env` file based on `.env.example`:
-```bash
-cp .env.example .env
-```
+# 2. Setup database (creates DB, schema, and seed data)
+npm run db:setup
 
-3. Update the `.env` file with your PostgreSQL credentials.
-
-4. Make sure PostgreSQL is installed and running on your system.
-
-5. Create the database (if it doesn't exist):
-```bash
-psql -U postgres
-CREATE DATABASE nexteer_hack;
-\q
-```
-
-## Running the Server
-
-Development mode (with auto-restart):
-```bash
+# 3. Start server
 npm run dev
 ```
 
-Production mode:
+**In another terminal, start the simulator:**
 ```bash
-npm start
+npm run simulator
 ```
 
-## API Endpoints
+✅ **API running at:** http://localhost:3001
 
-- `GET /` - Welcome message
-- `GET /health` - Health check endpoint (includes database connection status)
+## 🧪 Test Installation
 
-## Socket.io Events
+```bash
+# Health check
+curl http://localhost:3001/health
 
-- `connection` - Client connects to the server
-- `disconnect` - Client disconnects from the server
-- `message` - Example message event (broadcasts to all clients)
+# Get parking spots
+curl http://localhost:3001/api/spots
 
-## Technologies
+# Should return 30 spots
+```
 
-- **Express** - Web framework
-- **Socket.io** - Real-time bidirectional communication
-- **pg** - PostgreSQL client for Node.js
-- **dotenv** - Environment variable management
-- **cors** - Cross-Origin Resource Sharing middleware
+## 📡 API Endpoints
+
+**30+ endpoints across 4 categories:**
+
+- **Auth** - Signup, login, profile management
+- **Spots** - List, filter, statistics, sensor updates
+- **Reservations** - Create, view, cancel, payment (JWT protected)
+- **Analytics** - Predictions, pricing, trends
+
+📖 **Full API Reference:** See [API_DOCS.md](./API_DOCS.md)
+
+## ⚡ Real-time Updates
+
+Socket.IO events for live updates:
+- `sensor-update` - Broadcasts when spot occupancy changes
+- `subscribe-spot` - Subscribe to specific spot
+- `subscribe-zone` - Subscribe to zone updates
+
+## 📦 Import Postman Collection
+
+Import `SmartPark_API.postman_collection.json` into Postman to test all endpoints easily.
+
+## � Project Structure
+
+```
+backend/
+├── config/           # Database configuration
+├── controllers/      # API logic (auth, spots, reservations, analytics)
+├── database/         # SQL schema & seed data
+├── middleware/       # JWT authentication
+├── routes/           # API route definitions
+├── services/         # Business logic (prediction, pricing)
+├── server.js         # Main Express + Socket.IO server
+├── simulator.js      # Sensor data generator
+└── package.json      # Dependencies & scripts
+```
+
+## 🤖 AI Features
+
+**EWMA Prediction Algorithm:**
+- Analyzes last hour of sensor events
+- Returns probability (0-1) with confidence level
+- Considers average occupancy duration
+
+**Dynamic Pricing:**
+- Base price by zone (Downtown: $8, Midtown: $6, Residential: $4)
+- Peak hour multiplier (1.5x from 8 AM - 6 PM)
+- Occupancy-based adjustment (high: 1.8x, low: 0.8x)
+- Demand-based pricing
+
+## � Database
+
+**6 Tables:**
+- `users` - Authentication
+- `spots` - 30 parking locations
+- `sensors` - Real-time status
+- `sensor_events` - Historical data (for predictions)
+- `reservations` - Bookings
+- `pricing_history` - Price tracking
+
+## �️ Available Commands
+
+```bash
+npm install          # Install dependencies
+npm run dev          # Start server (development with auto-reload)
+npm start            # Start server (production)
+npm run simulator    # Start sensor simulator
+npm run db:create    # Create database
+npm run db:schema    # Run schema
+npm run db:seed      # Add seed data
+npm run db:setup     # Do all DB setup at once
+```
+
+## 🐛 Troubleshooting
+
+**PostgreSQL not running?**
+```bash
+sudo service postgresql start  # Linux
+brew services start postgresql # macOS
+```
+
+**Database connection fails?**
+- Check credentials in `.env`
+- Default user: `postgres`, password usually empty or `postgres`
+
+**Port 3001 in use?**
+```bash
+lsof -ti:3001 | xargs kill -9
+```
+
+**Need to reset database?**
+```bash
+npm run db:setup  # Recreates everything
+```
+
+## 📚 Documentation
+
+- **API_DOCS.md** - Complete API reference with examples
+- **GETTING_STARTED.md** - Quick setup guide
+- **SmartPark_API.postman_collection.json** - Postman collection
+
+## � License
+
+ISC
+
